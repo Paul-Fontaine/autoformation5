@@ -33,29 +33,21 @@ class Generator(nn.Module):
         self.batch_norm4 = nn.BatchNorm2d(32)
 
     def forward(self, x):
-        print(x.shape)
         x = self.linear(x)
-        print(x.shape)
         x = x.view(-1, 128, 7, 7)
-        print(x.shape)
         x = self.batch_norm1(x)
         x = F.relu(x)
-        print(x.shape)
         x = self.deconv1(x)
         x = self.batch_norm2(x)
         x = F.relu(x)
-        print(x.shape)
         x = self.deconv2(x)
         x = self.batch_norm3(x)
         x = F.relu(x)
-        print(x.shape)
         x = self.deconv3(x)
         x = self.batch_norm4(x)
         x = F.relu(x)
-        print(x.shape)
         x = self.deconv4(x)
         x = F.sigmoid(x)
-        print(x.shape)
         return x
 
 
@@ -75,24 +67,17 @@ class Discrimanator(nn.Module):
         self.fc = nn.Linear(4096, 1)
 
     def forward(self, x):
-        print(x.shape)
         x = self.conv1(x)
         x = F.leaky_relu(x, 0.2)
-        print(x.shape)
         x = self.conv2(x)
         x = F.leaky_relu(x, 0.2)
-        print(x.shape)
         x = self.conv3(x)
         x = F.leaky_relu(x, 0.2)
-        print(x.shape)
         x = self.conv4(x)
         x = F.leaky_relu(x, 0.2)
-        print(x.shape)
         x = x.flatten(1)
-        print(x.shape)
         x = self.fc(x)
         x = F.sigmoid(x)
-        print(x.shape)
         return x
 
 
