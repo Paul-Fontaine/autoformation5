@@ -161,26 +161,33 @@ class DCGAN(nn.Module):
         self.generator.load_state_dict(torch.load(generator_path, map_location=device))
         self.discriminator.load_state_dict(torch.load(discriminator_path, map_location=device))
 
-    def generate(self, num_images=16, plot=True):
+    def generate(self, num_images=16, plot = True, save: bool | str = False):
         self.generator.eval()
-        z = np.random.uniform(-1, 1, size=(num_images, self.z_dim))
-        z = torch.from_numpy(z).float().to(device)
+        z = torch.randn(num_images, self.z_dim, device=device)
         fake_images = self.generator(z)
         fake_images = fake_images.detach().cpu().numpy()
 
-        if plot:
+        if plot or save:
             n = math.sqrt(num_images)
             if not n.is_integer():
                 n = math.ceil(math.sqrt(num_images))
             else:
                 n = int(n)
-            fake_images = np.squeeze(fake_images, axis=1)
+            fake_images_plot = np.squeeze(fake_images, axis=1)
 
             fig, axes = plt.subplots(n, n, figsize=(20, 20))
             for i, ax in enumerate(axes.flatten()):
-                ax.imshow(fake_images[i], cmap='gray')
+                ax.imshow(fake_images_plot[i], cmap='gray')
                 ax.axis('off')
-            plt.show()
+            if plot:
+                plt.show()
+            if save:
+                if not os.path.exists('generated_images'):
+                    os.makedirs('generated_images')
+                if isinstance(save, str):
+                    plt.savefig(save)
+                else:
+                    plt.savefig(f'generated_images/epoch_{self.epoch}.png')
 
         return fake_images
 
