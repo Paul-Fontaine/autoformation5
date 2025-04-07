@@ -177,6 +177,8 @@ class DCGAN(nn.Module):
                 images = self.generate(4, plot=False, save=True)
                 writer.add_images("Generated Images after each epoch", images, epoch)
 
+        writer.close()
+
     def load_from_checkpoint(self, generator_path: str = 'checkpoint/generator.pth',
                              discriminator_path: str = 'checkpoint/discriminator.pth'):
         self.generator.load_state_dict(torch.load(generator_path, map_location=device))
