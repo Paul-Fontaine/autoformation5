@@ -22,6 +22,7 @@ class Generator(nn.Module):
         :param conv_dim: the depth of the first layer of the generator
         """
         super(Generator, self).__init__()
+        self.to(device)
         self.linear = nn.Linear(z_dim, 128 * 7 * 7)
         self.deconv1 = nn.ConvTranspose2d(128, 128, 5, 2, padding=2, output_padding=1, bias=False)
         self.deconv2 = nn.ConvTranspose2d(128, 64, 5, 2, padding=2, output_padding=1, bias=False)
@@ -59,6 +60,7 @@ class Discrimanator(nn.Module):
         :param conv_dim: the depth of the first layer of the discriminator
         """
         super(Discrimanator, self).__init__()
+        self.to(device)
         layer_filters = [32, 64, 128, 256]
         self.conv1 = nn.Conv2d(1, 32, 5, 2, padding=2, bias=False)
         self.conv2 = nn.Conv2d(32, 64, 5, 2, padding=2, bias=False)
@@ -84,6 +86,7 @@ class Discrimanator(nn.Module):
 class DCGAN(nn.Module):
     def __init__(self, z_dim=100):
         super(DCGAN, self).__init__()
+        self.to(device)
         self.z_dim = z_dim
         self.generator = Generator(z_dim)
         self.discriminator = Discrimanator()
