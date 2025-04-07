@@ -13,6 +13,15 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"Using {device} device")
 
 
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        m.weight.data.normal_(0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        m.weight.data.normal_(1.0, 0.02)
+        m.bias.data.fill_(0)
+
+
 class Generator(nn.Module):
     def __init__(self, z_dim=100):
         """
@@ -31,6 +40,7 @@ class Generator(nn.Module):
         self.batch_norm2 = nn.BatchNorm2d(128)
         self.batch_norm3 = nn.BatchNorm2d(64)
         self.batch_norm4 = nn.BatchNorm2d(32)
+        self.apply(weights_init)
         self.to(device)
 
     def forward(self, x):
@@ -66,6 +76,7 @@ class Discrimanator(nn.Module):
         self.conv3 = nn.Conv2d(64, 128, 5, 2, padding=2, bias=False)
         self.conv4 = nn.Conv2d(128, 256, 5, 1, padding=2, bias=False)
         self.fc = nn.Linear(4096, 1)
+        self.apply(weights_init)
         self.to(device)
 
     def forward(self, x):
