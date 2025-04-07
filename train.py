@@ -5,7 +5,7 @@ import time
 
 # Hyperparameters
 N_EPOCHS = 20
-BATCH_SIZE = 500
+BATCH_SIZE = 32
 LR = 0.0002
 BETA1 = 0.5
 BETA2 = 0.999
