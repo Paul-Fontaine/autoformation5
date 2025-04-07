@@ -113,7 +113,7 @@ class DCGAN(nn.Module):
         self.discriminator.train()
         criterion = nn.BCELoss()
         g_optimizer = optim.Adam(self.generator.parameters(), lr=lr, betas=(beta1, beta2))
-        d_optimizer = optim.Adam(self.discriminator.parameters(), lr=lr, betas=(beta1, beta2))
+        d_optimizer = optim.Adam(self.discriminator.parameters(), lr=lr/2, betas=(beta1, beta2))
         for epoch in range(num_epochs):
             running_g_loss = 0.0
             running_d_loss = 0.0
@@ -149,7 +149,7 @@ class DCGAN(nn.Module):
                     # Train generator
                     g_optimizer.zero_grad()
                     g_fake = self.discriminator(g_fake_images)
-                    g_loss = criterion(g_fake, real_labels)
+                    g_loss = criterion(g_fake, torch.ones(batch_size, 1, device=device))
                     g_loss.backward()
                     g_optimizer.step()
 
