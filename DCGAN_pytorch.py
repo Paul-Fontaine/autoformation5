@@ -100,7 +100,6 @@ class DCGAN(nn.Module):
         self.z_dim = z_dim
         self.generator = Generator(z_dim)
         self.discriminator = Discrimanator()
-        self.epoch = 0
         self.to(device)
 
     def forward(self, x):
@@ -112,8 +111,6 @@ class DCGAN(nn.Module):
                data_loader,
                num_epochs: int = 10,
                lr: float = 0.0002,
-               beta1: float = 0.5,
-               beta2: float = 0.999,
                discriminator_update_period: int = 2,
                use_tensorboard: bool | str = True):
 
@@ -180,11 +177,11 @@ class DCGAN(nn.Module):
                         writer.add_scalar("Generator Loss", g_loss.item(), episode)
                         writer.add_scalar("Discriminator Loss", d_loss.item(), episode)
 
-            self.epoch += 1
             self.save_weights()
 
             if use_tensorboard:
-                images = self.generate(4, plot=False, save=True)
+                # images = self.generate(4, plot=False, save=f"generated_images/epoch_{epoch}.png")
+                images = self.generate(4, plot=False, save=False)
                 writer.add_images("Generated Images after each epoch", images, epoch)
 
                 writer.add_scalar("Average Discriminator Loss on epoch", average_g_loss, epoch)
@@ -202,7 +199,7 @@ class DCGAN(nn.Module):
         z = torch.randn(num_images, self.z_dim, device=device)
         fake_images = self.generator(z)
         fake_images = fake_images.detach().cpu().numpy()
-        fake_images = (fake_images + 1) / 2
+        fake_images = (fake_images + 1) / 2  # Rescale from [-1, 1] to [0, 1]
 
         if plot or save:
             n = math.sqrt(num_images)
@@ -224,7 +221,7 @@ class DCGAN(nn.Module):
                 if isinstance(save, str):
                     plt.savefig(save)
                 else:
-                    plt.savefig(f'generated_images/epoch_{self.epoch}.png')
+                    plt.savefig(f'generated_images.png')
 
         return fake_images
 
