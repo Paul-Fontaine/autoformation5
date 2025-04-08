@@ -5,7 +5,7 @@ import time
 
 # Hyperparameters
 N_EPOCHS = 30
-BATCH_SIZE = 256
+BATCH_SIZE = 32
 LR = 0.0002
 DISCRIMINATOR_UPDATE_PERIOD = 1
 
