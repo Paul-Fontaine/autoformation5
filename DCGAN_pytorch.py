@@ -58,7 +58,7 @@ class Generator(nn.Module):
         x = self.batch_norm4(x)
         x = F.relu(x)
         x = self.deconv4(x)
-        x = F.sigmoid(x)
+        x = F.tanh(x)
         return x
 
 
@@ -200,6 +200,7 @@ class DCGAN(nn.Module):
         z = torch.randn(num_images, self.z_dim, device=device)
         fake_images = self.generator(z)
         fake_images = fake_images.detach().cpu().numpy()
+        fake_images = (fake_images + 1) / 2
 
         if plot or save:
             n = math.sqrt(num_images)
@@ -211,7 +212,7 @@ class DCGAN(nn.Module):
 
             fig, axes = plt.subplots(n, n, figsize=(20, 20))
             for i, ax in enumerate(axes.flatten()):
-                ax.imshow(fake_images_plot[i], cmap='gray')
+                ax.imshow(fake_images_plot[i], cmap='gray', vmin=0.0, vmax=1.0)
                 ax.axis('off')
             if plot:
                 plt.show()
