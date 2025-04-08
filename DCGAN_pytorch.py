@@ -119,6 +119,7 @@ class DCGAN(nn.Module):
 
         if use_tensorboard:
             if isinstance(use_tensorboard, str):
+                print(f"run name : {use_tensorboard}")
                 writer = SummaryWriter(log_dir=use_tensorboard)
             else:
                 writer = SummaryWriter()
