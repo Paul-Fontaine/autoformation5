@@ -4,12 +4,10 @@ from dataset import mnist
 import time
 
 # Hyperparameters
-N_EPOCHS = 20
-BATCH_SIZE = 64
+N_EPOCHS = 30
+BATCH_SIZE = 256
 LR = 0.0002
-BETA1 = 0.9
-BETA2 = 0.999
-DISCRIMINATOR_UPDATE_PERIOD = 2
+DISCRIMINATOR_UPDATE_PERIOD = 1
 
 
 def run_name_from_hyperparams():
@@ -18,11 +16,11 @@ def run_name_from_hyperparams():
     hours = current_time.tm_hour
     minutes = current_time.tm_min
     seconds = current_time.tm_sec
-    return f"runs/{hours}-{minutes}-{seconds}__epochs_{N_EPOCHS}_batch_{BATCH_SIZE}_lr_{LR}_beta1_{BETA1}_beta2_{BETA2}_d_update_{DISCRIMINATOR_UPDATE_PERIOD}"
+    return f"runs/{hours}-{minutes}-{seconds}__epochs_{N_EPOCHS}_batch_{BATCH_SIZE}_lr_{LR}_d_update_{DISCRIMINATOR_UPDATE_PERIOD}"
 
 
 train_loader = DataLoader(mnist, batch_size=BATCH_SIZE, shuffle=True)
 
 # Create a DCGAN model
 dcgan = DCGAN()
-dcgan.train_(train_loader, N_EPOCHS, LR, BETA1, BETA2, DISCRIMINATOR_UPDATE_PERIOD, use_tensorboard=run_name_from_hyperparams())
+dcgan.train_(train_loader, N_EPOCHS, LR, DISCRIMINATOR_UPDATE_PERIOD, use_tensorboard=run_name_from_hyperparams())
