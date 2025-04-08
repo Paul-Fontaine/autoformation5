@@ -2,7 +2,7 @@
 __pycache__/
 checkpoint/
 data/
-runs/
+
 generated_images_tensorflow/
 CGAN.py
 DCGAN.py
