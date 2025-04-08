@@ -1,8 +1,6 @@
 .idea/
 __pycache__/
-checkpoint/
 data/
-
 generated_images_tensorflow/
 CGAN.py
 DCGAN.py
