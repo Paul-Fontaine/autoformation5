@@ -126,8 +126,8 @@ class DCGAN(nn.Module):
         self.generator.train()
         self.discriminator.train()
         criterion = nn.BCELoss()
-        g_optimizer = optim.Adam(self.generator.parameters(), lr=lr, betas=(beta1, beta2))
-        d_optimizer = optim.Adam(self.discriminator.parameters(), lr=lr/2, betas=(beta1, beta2))
+        g_optimizer = optim.RMSprop(self.generator.parameters(), lr=lr*0.5, alpha=0.9)
+        d_optimizer = optim.RMSprop(self.discriminator.parameters(), lr=lr, alpha=0.9)
         for epoch in range(num_epochs):
             running_g_loss = 0.0
             running_d_loss = 0.0
@@ -186,7 +186,7 @@ class DCGAN(nn.Module):
                 images = self.generate(4, plot=False, save=True)
                 writer.add_images("Generated Images after each epoch", images, epoch)
 
-                writer.add_scalar("Average Discriminator Loss after on epoch", average_g_loss, epoch)
+                writer.add_scalar("Average Discriminator Loss on epoch", average_g_loss, epoch)
                 writer.add_scalar("Average Generator Loss on epoch", average_d_loss, epoch)
 
         writer.close()
