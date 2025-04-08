@@ -129,6 +129,7 @@ class DCGAN(nn.Module):
         for epoch in range(num_epochs):
             running_g_loss = 0.0
             running_d_loss = 0.0
+            running_correct_pred = 0.0
 
             with tqdm(data_loader, desc=f"Epoch {epoch + 1}/{num_epochs}", unit="batch") as tqdm_loader:
                 for i, batch in enumerate(tqdm_loader):
@@ -153,6 +154,9 @@ class DCGAN(nn.Module):
                         d_loss = d_real_loss + d_fake_loss
                         d_loss.backward()
                         d_optimizer.step()
+
+                        # count the number of correct predictions
+                        running_correct_pred += (d_real > 0.5).sum().item() + (d_fake < 0.5).sum().item()
 
                     # Generate fresh fake images for generator training
                     z = torch.randn(batch_size, self.z_dim, device=device)
@@ -186,13 +190,14 @@ class DCGAN(nn.Module):
 
                 writer.add_scalar("Average Discriminator Loss on epoch", average_g_loss, epoch)
                 writer.add_scalar("Average Generator Loss on epoch", average_d_loss, epoch)
+                writer.add_scalar("Discriminator Accuracy", running_correct_pred / (2 * len(data_loader.dataset)), epoch)
 
         writer.close()
 
     def load_from_checkpoint(self, generator_path: str = 'checkpoint/generator.pth',
                              discriminator_path: str = 'checkpoint/discriminator.pth'):
-        self.generator.load_state_dict(torch.load(generator_path, map_location=device))
-        self.discriminator.load_state_dict(torch.load(discriminator_path, map_location=device))
+        self.generator.load_state_dict(torch.load(generator_path, map_location=device, weights_only=True))
+        self.discriminator.load_state_dict(torch.load(discriminator_path, map_location=device, weights_only=True))
 
     def generate(self, num_images=16, plot = True, save: bool | str = False):
         self.generator.eval()
