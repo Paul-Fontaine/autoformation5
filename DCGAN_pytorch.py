@@ -178,8 +178,6 @@ class DCGAN(nn.Module):
                     if use_tensorboard:
                         writer.add_scalar("Generator Loss", g_loss.item(), episode)
                         writer.add_scalar("Discriminator Loss", d_loss.item(), episode)
-                        writer.add_scalar("Generator running Loss", average_g_loss, episode)
-                        writer.add_scalar("Discriminator running Loss", average_d_loss, episode)
 
             self.epoch += 1
             self.save_weights()
@@ -187,6 +185,9 @@ class DCGAN(nn.Module):
             if use_tensorboard:
                 images = self.generate(4, plot=False, save=True)
                 writer.add_images("Generated Images after each epoch", images, epoch)
+
+                writer.add_scalar("Average Discriminator Loss after on epoch", average_g_loss, epoch)
+                writer.add_scalar("Average Generator Loss on epoch", average_d_loss, epoch)
 
         writer.close()
 
